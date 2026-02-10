@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Prévia</title>
+
   <style>
     body {
       margin: 0;
@@ -33,11 +34,9 @@
       width: 100%;
       height: 460px;
       object-fit: cover;
-      /* blur removido para vídeo já borrado */ filter: none;
+      filter: none;
       transition: 0.4s ease;
     }
-
-    /* sem blur no hover */
 
     .username {
       font-size: 24px;
@@ -71,9 +70,40 @@
       transform: scale(1.06);
       box-shadow: 0 10px 28px rgba(255,0,80,0.55);
     }
-
   </style>
+
+  <!-- META PURCHASE TRACKING -->
+  <script>
+  (function () {
+    const purchaseEventId =
+      localStorage.getItem('meta_event_id') ||
+      ('purchase_' + Date.now() + '_' + Math.random().toString(36).slice(2));
+
+    if (localStorage.getItem('purchase_sent')) return;
+    localStorage.setItem('purchase_sent', '1');
+
+    if (typeof fbq === 'function') {
+      fbq('track', 'Purchase', {
+        value: 1.00,
+        currency: 'USD'
+      }, { eventID: purchaseEventId });
+    }
+
+    fetch('/api/meta', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        event_name: 'Purchase',
+        event_id: purchaseEventId,
+        url: window.location.href
+      })
+    });
+  })();
+  </script>
+  <!-- END META PURCHASE -->
+
 </head>
+
 <body>
   <div class="container">
     <video class="preview-img" src="IMG_0041.mp4" autoplay muted loop playsinline></video>
